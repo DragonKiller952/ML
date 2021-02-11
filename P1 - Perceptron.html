@@ -13449,6 +13449,7 @@ div#notebook {
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">PerceptronNetwork</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">amounts</span><span class="p">:</span> <span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Layers</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Input_type</span> <span class="o">=</span> <span class="s1">&#39;Auto&#39;</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">amounts</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">Layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">PerceptronLayer</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
             
@@ -13462,11 +13463,24 @@ div#notebook {
         <span class="c1"># eerste als de Perceptrons van de laag erboven</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Layers</span><span class="p">)):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">Layers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_inputs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Layers</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Input_type</span> <span class="o">=</span> <span class="s1">&#39;Auto&#39;</span>
+        
+    <span class="k">def</span> <span class="nf">set_inputs_hand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Inputs</span><span class="p">):</span>
+        <span class="c1"># set de inputs van perceptrons aan de hand van handmatige</span>
+        <span class="c1"># coordinaten</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Inputs</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Inputs</span><span class="p">[</span><span class="n">i</span><span class="p">])):</span>
+                <span class="n">Inputs_coll</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">Inputs</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]:</span>
+                    <span class="n">Inputs_coll</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Layers</span><span class="p">[</span><span class="n">k</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">Perceptrons</span><span class="p">[</span><span class="n">k</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>    
+                <span class="bp">self</span><span class="o">.</span><span class="n">Layers</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">Perceptrons</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">set_input</span><span class="p">(</span><span class="n">Inputs_coll</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Input_type</span> <span class="o">=</span> <span class="s1">&#39;Hand&#39;</span>
             
     <span class="k">def</span> <span class="nf">feed_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">invoer</span><span class="p">:[</span><span class="nb">int</span><span class="p">]):</span>
         <span class="c1"># voert het network uit en geeft het antwoord</span>
         <span class="c1"># voor de invoer terug</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_inputs</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Input_type</span> <span class="o">==</span> <span class="s1">&#39;Auto&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_inputs</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Layers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">answer</span><span class="p">(</span><span class="n">invoer</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Layers</span><span class="p">)):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">Layers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">answer</span><span class="p">()</span>
@@ -13572,6 +13586,87 @@ div#notebook {
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Layers:[Perceptrons:[Weight:[0],Bias:0, Weight:[0],Bias:0], Perceptrons:[Weight:[-1, -1],Bias:1, Weight:[1, 1],Bias:-0.5], Perceptrons:[Weight:[1, 1],Bias:-2]]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">half_adder</span> <span class="o">=</span> <span class="n">PerceptronNetwork</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">half_adder</span><span class="o">.</span><span class="n">set_inputs_hand</span><span class="p">([[[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]],</span>
+                            <span class="p">[[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]],</span> 
+                            <span class="p">[[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]]])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">half_adder</span><span class="o">.</span><span class="n">set_values</span><span class="p">([[[[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">]],</span> 
+                       <span class="p">[[[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mi">1</span><span class="p">]],</span> 
+                       <span class="p">[[[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mi">1</span><span class="p">]],</span> 
+                       <span class="p">[[[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mf">0.5</span><span class="p">],</span> <span class="p">[[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mi">1</span><span class="p">]]])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">half_adder</span><span class="o">.</span><span class="n">feed_forward</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">half_adder</span><span class="o">.</span><span class="n">feed_forward</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">half_adder</span><span class="o">.</span><span class="n">feed_forward</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">half_adder</span><span class="o">.</span><span class="n">feed_forward</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[0, 0]
+[0, 1]
+[0, 1]
+[1, 0]
 </pre>
 </div>
 </div>
